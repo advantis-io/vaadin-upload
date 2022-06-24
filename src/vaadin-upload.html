@@ -620,13 +620,9 @@ This program is available under Apache License Version 2.0, available at https:/
               if (!evt) {
                 return;
               }
-              if (xhr.status === 0) {
-                file.error = this.i18n.uploading.error.serverUnavailable;
-              } else if (xhr.status >= 500) {
-                file.error = this.i18n.uploading.error.unexpectedServerError;
-              } else if (xhr.status >= 400) {
-                file.error = this.i18n.uploading.error.forbidden;
-              }
+              // if file error is not already set from upload-response listener
+              // then get error (if any) from xhr
+              file.error = file.error || this._getError(xhr);
 
               file.complete = !file.error;
               this.dispatchEvent(
@@ -682,6 +678,16 @@ This program is available under Apache License Version 2.0, available at https:/
           );
           if (uploadEvt) {
             xhr.send(formData);
+          }
+        }
+
+        _getError(xhr) {
+          if (xhr.status === 0) {
+            return this.i18n.uploading.error.serverUnavailable;
+          } else if (xhr.status >= 500) {
+            return this.i18n.uploading.error.unexpectedServerError;
+          } else if (xhr.status >= 400) {
+            return this.i18n.uploading.error.forbidden;
           }
         }
 

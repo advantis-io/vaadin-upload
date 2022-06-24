@@ -331,6 +331,11 @@
               expectResponseErrorForStatus(upload.i18n.uploading.error.unexpectedServerError, status, done);
             });
           });
+
+          it('should allow overriding how error is generated from xhr', done => {
+            upload._getError = xhr => 'Some error';
+            expectResponseErrorForStatus('Some error', 404, done);
+          });
         });
       });
 
